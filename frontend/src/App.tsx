@@ -1,6 +1,6 @@
 const App = () => {
   return (
-    <div>Proshop</div>
+    <div>Hello World</div>
   )
 }
 export default App
