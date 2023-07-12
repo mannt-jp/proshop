@@ -1,22 +1,10 @@
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { ProductType } from "./Home";
 
-export interface ProductType {
-  _id: string;
-  name: string;
-  image: string;
-  description: string;
-  brand: string;
-  category: string;
-  price: number;
-  countInStock: number;
-  rating: number;
-  numReviews: number;
-}
-
-const Home = () => {
+const Products = () => {
   const {
     data: products,
     isLoading,
@@ -56,4 +44,4 @@ const Home = () => {
     </>
   );
 };
-export default Home;
+export default Products;

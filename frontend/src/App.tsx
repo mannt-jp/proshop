@@ -1,17 +1,29 @@
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import { Container } from "react-bootstrap";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import RootLayout from "./pages/RootLayout";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout></RootLayout>,
+    children: [
+      { index: true, element: <Home></Home> },
+      { path: "login", element: <Login></Login> },
+      {
+        path: "products",
+        children: [
+          { index: true, element: <Products></Products> },
+          { path: ":productId", element: <ProductDetail></ProductDetail> },
+        ],
+      },
+    ],
+  },
+]);
+
 const App = () => {
-  return (
-    <>
-      <Header></Header>
-      <main className="py-3">
-        <Container>
-          <h1 className="text-3xl">Welcome to ProShop</h1>
-        </Container>
-      </main>
-      <Footer></Footer>
-    </>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 };
 export default App;
