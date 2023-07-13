@@ -1,22 +1,12 @@
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Rating from "./Rating";
+import Product from "../interfaces/Product";
 
-const Product = ({
+const ProductComponent = ({
   product,
 }: {
-  product: {
-    _id: string;
-    name: string;
-    image: string;
-    description: string;
-    brand: string;
-    category: string;
-    price: number;
-    countInStock: number;
-    rating: number;
-    numReviews: number;
-  };
+  product: Product
 }) => {
   return (
     <Card className="my-3 p-3 rounded">
@@ -40,4 +30,4 @@ const Product = ({
     </Card>
   );
 };
-export default Product;
+export default ProductComponent;

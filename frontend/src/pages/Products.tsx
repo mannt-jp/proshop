@@ -1,8 +1,9 @@
 import { Row, Col } from "react-bootstrap";
-import Product from "../components/Product";
+import ProductComponent from "../components/ProductComponent";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { ProductType } from "./Home";
+import Loader from "../components/Loader";
+import Product from "../interfaces/Product";
 
 const Products = () => {
   const {
@@ -13,7 +14,7 @@ const Products = () => {
     queryKey: ["products"],
     queryFn: async () => {
       const response = await axios.get("http://localhost:8000/api/products");
-      return response.data as ProductType[];
+      return response.data as Product[];
     },
   });
   return (
@@ -21,24 +22,26 @@ const Products = () => {
       <h1>Latest products</h1>
       {
         <Row>
-          {isLoading
-            ? "Loading..."
-            : isError
-            ? "Error fetching products!"
-            : products?.map((product) => {
-                return (
-                  <Col
-                    key={product._id}
-                    sm={12}
-                    md={6}
-                    lg={4}
-                    xl={3}
-                    className="flex"
-                  >
-                    <Product product={product}></Product>
-                  </Col>
-                );
-              })}
+          {isLoading ? (
+            <Loader></Loader>
+          ) : isError ? (
+            "Error fetching products!"
+          ) : (
+            products?.map((product) => {
+              return (
+                <Col
+                  key={product._id}
+                  sm={12}
+                  md={6}
+                  lg={4}
+                  xl={3}
+                  className="flex"
+                >
+                  <ProductComponent product={product}></ProductComponent>
+                </Col>
+              );
+            })
+          )}
         </Row>
       }
     </>
