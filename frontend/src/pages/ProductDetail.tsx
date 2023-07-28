@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -14,14 +14,16 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import Product from "../interfaces/Product";
+import { ProductType } from "../types/ProductType";
 import { useState } from "react";
 import { cartActions } from "../store/cartSlice";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [quantity, setQuantity] = useState(1);
-  // const cart = useSelector((state: RootState) => state.cart);
+  const cart = useSelector((state: RootState) => state.cart);
+  console.log(cart);
   const dispatch = useDispatch();
   const {
     data: product,
@@ -30,10 +32,22 @@ const ProductDetail = () => {
   } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
-      const response = await axios.get(
-        `http://localhost:8000/api/products/${productId}`
-      );
-      return response.data as Product;
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/products/${productId}`
+        );
+        return response.data as ProductType;
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error?.response) {
+            toast.error("No server response");
+          } else if (error.response?.status === 500) {
+            toast.error("Product not found!");
+          } else {
+            toast.error("Login Failed");
+          }
+        }
+      }
     },
   });
   const addToCartHandler = (
@@ -54,20 +68,20 @@ const ProductDetail = () => {
       ) : (
         <Row>
           <Col md={5}>
-            <Image src={product.image} alt={product.name}></Image>
+            <Image src={product?.image} alt={product?.name}></Image>
           </Col>
           <Col md={4}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <h3>{product.name}</h3>
+                <h3>{product?.name}</h3>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Rating
-                  rating={product.rating ? product.rating : 0}
-                  numReviews={product.numReviews ? product.numReviews : 0}
+                  rating={product?.rating ? product.rating : 0}
+                  numReviews={product?.numReviews ? product.numReviews : 0}
                 ></Rating>
               </ListGroup.Item>
-              <ListGroup.Item>{product.description}</ListGroup.Item>
+              <ListGroup.Item>{product?.description}</ListGroup.Item>
             </ListGroup>
           </Col>
           <Col md={3}>
@@ -77,7 +91,7 @@ const ProductDetail = () => {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>${product.price}</strong>
+                      <strong>${product?.price}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -86,14 +100,14 @@ const ProductDetail = () => {
                     <Col>Status:</Col>
                     <Col>
                       <strong>
-                        {product.countInStock && product.countInStock > 0
+                        {product?.countInStock && product?.countInStock > 0
                           ? "In Stock"
                           : "Out Of Strock"}
                       </strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
-                {product.countInStock > 0 && (
+                {product?.countInStock && product?.countInStock > 0 && (
                   <ListGroup.Item>
                     <Row>
                       <Col>Quantity:</Col>
@@ -105,7 +119,7 @@ const ProductDetail = () => {
                             setQuantity(parseInt(e.target.value))
                           }
                         >
-                          {[...Array(product.countInStock).keys()].map((q) => (
+                          {[...Array(product?.countInStock).keys()].map((q) => (
                             <option key={q + 1} value={q + 1}>
                               {q + 1}
                             </option>
@@ -120,7 +134,7 @@ const ProductDetail = () => {
                     className="btn-block"
                     type="button"
                     disabled={
-                      !product.countInStock || product.countInStock === 0
+                      !product?.countInStock || product?.countInStock === 0
                     }
                     onClick={addToCartHandler}
                   >

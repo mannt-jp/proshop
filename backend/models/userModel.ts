@@ -1,4 +1,13 @@
-const { default: mongoose } = require("mongoose");
+import mongoose from "mongoose";
+import { z } from "zod";
+
+export const UserZSchema = z.object({
+  name: z.string(),
+  email: z.string().email("This is not a valid email"),
+  password: z.string().min(8).max(20),
+  isAdmin: z.boolean().default(false),
+});
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,4 +34,4 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-module.exports = User;
+export default User;

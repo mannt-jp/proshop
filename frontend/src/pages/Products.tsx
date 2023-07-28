@@ -1,9 +1,9 @@
 import { Row, Col } from "react-bootstrap";
-import ProductComponent from "../components/ProductComponent";
+import ProductComponent from "../components/Product";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../components/Loader";
-import Product from "../interfaces/Product";
+import {ProductType} from "../types/ProductType";
 
 const Products = () => {
   const {
@@ -14,7 +14,7 @@ const Products = () => {
     queryKey: ["products"],
     queryFn: async () => {
       const response = await axios.get("http://localhost:8000/api/products");
-      return response.data as Product[];
+      return response.data as ProductType[];
     },
   });
   return (

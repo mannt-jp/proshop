@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Alert } from "react-bootstrap";
 
 const Message = ({
@@ -5,7 +6,7 @@ const Message = ({
   children,
 }: {
   variant: string;
-  children: string;
+  children: ReactNode;
 }) => {
   return <Alert variant={variant}>{children}</Alert>;
 };

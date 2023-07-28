@@ -1,10 +1,11 @@
 import { Row, Col } from "react-bootstrap";
-import ProductComponent from "../components/ProductComponent";
+import ProductComponent from "../components/Product";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import Product from "../interfaces/Product";
+import { ProductType } from "../types/ProductType";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const {
@@ -14,8 +15,18 @@ const Home = () => {
   } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:8000/api/products");
-      return response.data as Product[];
+      try {
+        const response = await axios.get("http://localhost:8000/api/products");
+        return response.data as ProductType[];
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (!error?.response) {
+            toast.error("No server response");
+          } else {
+            toast.error("Failed to fetch products");
+          }
+        }
+      }
     },
   });
   return (
